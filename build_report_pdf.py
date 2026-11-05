@@ -32,11 +32,11 @@ cursor_y += 28.0
 # Teammates
 page1.insert_text((MARGIN_LEFT, cursor_y), "Teammates:", fontname=FONT_BOLD, fontsize=13.0)
 cursor_y += 20.0
-page1.insert_text((MARGIN_LEFT, cursor_y), "25EU04918 – Tsapala Jaya Surya Jitendra", fontname=FONT_TITLE, fontsize=12.0)
+page1.insert_text((MARGIN_LEFT, cursor_y), "25EU04918 - Tsapala Jaya Surya Jitendra", fontname=FONT_TITLE, fontsize=12.0)
 cursor_y += 18.0
-page1.insert_text((MARGIN_LEFT, cursor_y), "24EU04210 – Chanumolu Megha Surya", fontname=FONT_TITLE, fontsize=12.0)
+page1.insert_text((MARGIN_LEFT, cursor_y), "24EU04210 - Chanumolu Megha Surya", fontname=FONT_TITLE, fontsize=12.0)
 cursor_y += 18.0
-page1.insert_text((MARGIN_LEFT, cursor_y), "24EU04226 – Kata Bhavani Prasad", fontname=FONT_TITLE, fontsize=12.0)
+page1.insert_text((MARGIN_LEFT, cursor_y), "24EU04226 - Kata Bhavani Prasad", fontname=FONT_TITLE, fontsize=12.0)
 cursor_y += 28.0
 
 # Project Description Heading
@@ -131,11 +131,11 @@ summary_p = (
     "The project was verified against all standard positive and negative test cases. The test suite results shown above "
     "demonstrate that the Deterministic Finite Automaton accurately identifies valid language members (satisfying all four character "
     "classes and length >= 8) while rejecting all strings with missing components or insufficient length with 100% precision.\n\n"
-    "• Formal DFA 5-Tuple: M = (Q, Sigma, delta, q0, F)\n"
-    "• Total Product States: 144 states (16 complexity states x 9 length states)\n"
-    "• Time Complexity: O(n) strictly linear time (guaranteed zero backtracking)\n"
-    "• Space Complexity: O(1) auxiliary space (4-bit bitmask register)\n"
-    "• GitHub Repository: https://github.com/Jitendra2007/password-complexity-automata"
+    "- Formal DFA 5-Tuple: M = (Q, Sigma, delta, q0, F)\n"
+    "- Total Product States: 144 states (16 complexity states x 9 length states)\n"
+    "- Time Complexity: O(n) strictly linear time (guaranteed zero backtracking)\n"
+    "- Space Complexity: O(1) auxiliary space (4-bit bitmask register)\n"
+    "- GitHub Repository: https://github.com/Jitendra2007/password-complexity-automata"
 )
 
 rect_sum = fitz.Rect(MARGIN_LEFT, 440.0, MARGIN_LEFT + USABLE_WIDTH, 700.0)
