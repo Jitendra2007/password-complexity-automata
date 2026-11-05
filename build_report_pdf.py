@@ -1,24 +1,23 @@
 import fitz
 import os
+import shutil
 
-pdf_path = r"c:\Users\tsapa\Desktop\toc\Password_Complexity_Validator_Report.pdf"
+primary_path = r"c:\Users\tsapa\Desktop\toc\Password_Complexity_Validator_Report.pdf"
+v2_path = r"c:\Users\tsapa\Desktop\toc\Password_Complexity_Validator_Report_v2.pdf"
+temp_path = r"c:\Users\tsapa\Desktop\toc\temp_report_build.pdf"
 screenshots_dir = r"c:\Users\tsapa\Desktop\toc\docs\screenshots"
 
 doc = fitz.open()
 
-# A4 dimensions in points: 595.32 x 841.92
 PAGE_WIDTH = 595.32
 PAGE_HEIGHT = 841.92
 MARGIN_LEFT = 36.0
 MARGIN_RIGHT = 36.0
-USABLE_WIDTH = PAGE_WIDTH - MARGIN_LEFT - MARGIN_RIGHT # 523.32 pt
+USABLE_WIDTH = PAGE_WIDTH - MARGIN_LEFT - MARGIN_RIGHT
 
-# ==========================================
 # PAGE 1: TEXT REPORT
-# ==========================================
 page1 = doc.new_page(width=PAGE_WIDTH, height=PAGE_HEIGHT)
 
-# In PyMuPDF, built-in standard Helvetica / Helvetica-Bold are available and match Aptos/Arial standard sizing
 FONT_TITLE = "helv"
 FONT_BOLD = "hebo"
 
@@ -33,11 +32,11 @@ cursor_y += 28.0
 # Teammates
 page1.insert_text((MARGIN_LEFT, cursor_y), "Teammates:", fontname=FONT_BOLD, fontsize=13.0)
 cursor_y += 20.0
-page1.insert_text((MARGIN_LEFT, cursor_y), "24EU04xxx – T. Jaya Surya Jitendra", fontname=FONT_TITLE, fontsize=12.0)
+page1.insert_text((MARGIN_LEFT, cursor_y), "25EU04918 – Tsapala Jaya Surya Jitendra", fontname=FONT_TITLE, fontsize=12.0)
 cursor_y += 18.0
-page1.insert_text((MARGIN_LEFT, cursor_y), "24EU04xxx – [Teammate 2]", fontname=FONT_TITLE, fontsize=12.0)
+page1.insert_text((MARGIN_LEFT, cursor_y), "24EU04210 – Chanumolu Megha Surya", fontname=FONT_TITLE, fontsize=12.0)
 cursor_y += 18.0
-page1.insert_text((MARGIN_LEFT, cursor_y), "24EU04xxx – [Teammate 3]", fontname=FONT_TITLE, fontsize=12.0)
+page1.insert_text((MARGIN_LEFT, cursor_y), "24EU04226 – Kata Bhavani Prasad", fontname=FONT_TITLE, fontsize=12.0)
 cursor_y += 28.0
 
 # Project Description Heading
@@ -73,10 +72,7 @@ desc_p4 = (
 
 for p_text in [desc_p1, desc_p2, desc_p3, desc_p4]:
     rect = fitz.Rect(MARGIN_LEFT, cursor_y, MARGIN_LEFT + USABLE_WIDTH, cursor_y + 120.0)
-    # insert_textbox calculates exact height
     h = page1.insert_textbox(rect, p_text, fontname=FONT_TITLE, fontsize=10.5, lineheight=1.28)
-    # The return value from insert_textbox is the remaining unused space, or we can measure lines
-    # Let's approximate line height: ~13.5 pt per line
     num_lines = len(p_text) // 90 + 1
     cursor_y += num_lines * 13.6 + 6.0
 
@@ -100,15 +96,12 @@ outputs = [
 ]
 
 for bold_prefix, desc_text in outputs:
-    # Prefix
     page1.insert_text((MARGIN_LEFT + 8.0, cursor_y), bold_prefix, fontname=FONT_BOLD, fontsize=10.0)
     prefix_w = fitz.get_text_length(bold_prefix, fontname=FONT_BOLD, fontsize=10.0)
     page1.insert_text((MARGIN_LEFT + 8.0 + prefix_w, cursor_y), desc_text, fontname=FONT_TITLE, fontsize=10.0)
     cursor_y += 15.0
 
-# ==========================================
 # PAGE 2: SCREENSHOTS 1 & 2
-# ==========================================
 page2 = doc.new_page(width=PAGE_WIDTH, height=PAGE_HEIGHT)
 
 img1_path = os.path.join(screenshots_dir, "screenshot1_simulator.png")
@@ -123,9 +116,7 @@ if os.path.exists(img1_path):
 if os.path.exists(img2_path):
     page2.insert_image(rect_img2, filename=img2_path)
 
-# ==========================================
 # PAGE 3: SCREENSHOT 3 & SUMMARY
-# ==========================================
 page3 = doc.new_page(width=PAGE_WIDTH, height=PAGE_HEIGHT)
 
 img3_path = os.path.join(screenshots_dir, "screenshot3_testsuite.png")
@@ -134,7 +125,6 @@ rect_img3 = fitz.Rect(MARGIN_LEFT, 36.0, MARGIN_LEFT + USABLE_WIDTH, 36.0 + 345.
 if os.path.exists(img3_path):
     page3.insert_image(rect_img3, filename=img3_path)
 
-# Optional project summary / repository link on page 3 below image
 page3.insert_text((MARGIN_LEFT, 420.0), "Project Implementation & Verification Summary:", fontname=FONT_BOLD, fontsize=13.0)
 
 summary_p = (
@@ -151,7 +141,20 @@ summary_p = (
 rect_sum = fitz.Rect(MARGIN_LEFT, 440.0, MARGIN_LEFT + USABLE_WIDTH, 700.0)
 page3.insert_textbox(rect_sum, summary_p, fontname=FONT_TITLE, fontsize=10.5, lineheight=1.35)
 
-# Save document
-doc.save(pdf_path)
+# Save to temp path first
+doc.save(temp_path)
 doc.close()
-print(f"Successfully generated PDF: {pdf_path}")
+
+# Try saving to primary path, or fallback to v2_path
+saved_dest = None
+try:
+    shutil.copyfile(temp_path, primary_path)
+    saved_dest = primary_path
+    print(f"Successfully updated primary PDF: {primary_path}")
+except PermissionError:
+    shutil.copyfile(temp_path, v2_path)
+    saved_dest = v2_path
+    print(f"Primary file locked by viewer. Saved updated version to: {v2_path}")
+
+if os.path.exists(temp_path):
+    os.remove(temp_path)
